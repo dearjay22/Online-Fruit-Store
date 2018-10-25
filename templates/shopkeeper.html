@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+	<form method="POST" action="/shopkeeper">
+			<tr>
+				<td>Iteam Name : </td>
+				<td><input type="text" name="iteam_name"></td>
+			</tr>
+			<tr>
+				<td>Iteam Prise : </td>
+				<td><input type="text" name="iteam_prise"></td>
+			</tr>
+			<tr>
+				
+				<td><input type="submit" name="submit"></td>
+			</tr>
+		</form>
+{% endblock content %}

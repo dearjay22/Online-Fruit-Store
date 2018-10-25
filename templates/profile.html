@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+    
+{% if res_msg  %}
+    
+    {{ res_msg }}
+
+{% endif %}
+
+<form method="POST" action="/profile/{{session['username']}}">
+<div class="form-group">
+<label for="text">Name</label>
+<input type="text" class="form-control" name="name" aria-describedby="name" value="{{data[0][1]}}">	   
+</div>
+
+<div class="form-group">
+<label for="text">Username</label>
+<input type="text" class="form-control" name="username" aria-describedby="username" value="{{data[0][2]}}">	   
+</div>
+
+<div class="form-group">
+<label for="email">Email</label>
+<input type="email" class="form-control" name="email" value="{{data[0][3]}}">
+</div>
+
+<div class="form-group">
+<label for="text">Contact</label>
+<input type="text" class="form-control" name="contact" aria-describedby="username" value="{{data[0][4]}}">	   
+</div>
+
+<div class="form-group">
+<label for="text">Address</label>
+<textarea rows="4" cols="50" name="address" >{{data[0][5]}}</textarea>	   
+</div>
+
+
+
+<div class="form-group">
+<button type="submit" name="submit" class="btn btn-primary">  Save </button>
+
+
+
+</div>
+
+</form>
+
+</div>
+<div class="col-sm-4">
+</div>
+</div>
+
+{% endblock content %}
