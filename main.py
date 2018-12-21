@@ -4,8 +4,10 @@ import smtplib
 import ast
 from functools import wraps
 
+#Copyright by Mitul & Jay !
+
 app = Flask(__name__)
-app.secret_key = "fucktheworld"
+app.secret_key = "AllrightItsFckinOKDude"
 db = pymysql.connect(
 	                     host = "localhost",
 	                     user = "root",
@@ -13,11 +15,6 @@ db = pymysql.connect(
 	                     db = "fruit_stole"
 	                 )
 	                     
-
-@app.route("/")
-def hello():
-    return "Hey I'am Mitul ! Happy To see you ! "
-
 @app.route("/signup", methods=['GET','POST'])
 def signup():
 	if request.method == 'POST':
@@ -27,23 +24,28 @@ def signup():
 		contact = request.form['contact']
 		address = request.form['address']
 		password = request.form['password']
+		cursor = db.cursor()
+		danzer = "true"
+		if name !="" and username !="" and email !="" and contact !="" and address !="" and password !="":
+			
+			
 
-		if name and username and email and contact and address and password:
-			cursor = db.cursor()
 			cursor.execute("select username from regester")
 			numrow = cursor.rowcount
 			for i in range(numrow):
 				user_input = cursor.fetchone()
 				if user_input[0] == username:
 					res_msg = "username is already in the database. so type other username ! ThankYou"
-					return render_template("signup.html",res_msg=res_msg,title="signup")
+					danzer = "true"
+					return render_template("signup.html",res_msg=res_msg,title="signup",danzer=danzer)
 			cursor.execute("select email from regester")
 			numrow_email = cursor.rowcount
 			for i in range(numrow_email):
 				user_input_email = cursor.fetchone()
 				if user_input_email[0] == email:
 					res_msg = "Email is already in the database. so type other username ! ThankYou "
-					return render_template("signup.html",res_msg=res_msg,title="signup")
+					danzer = "true"
+					return render_template("signup.html",res_msg=res_msg,title="signup",danzer=danzer)
 
 			query = "INSERT INTO regester(name,username,email,contact,address,password) VALUES(%s,%s,%s,%s,%s,%s)"
 			try:
@@ -62,41 +64,38 @@ def signup():
 				email_message = '''
 						Hello {},
 
-						Welcome To The Our Project ! 
+						Welcome To The UVPCE Fruit Store. ! 
 						Happy To see you
 
-						Thank you, from Mitul Patel
+						Thank you, from UVPCE Fruit Store.
 				'''.format(name)
 				res_msg = "Regestration Successfully Done !"
 				send_data(email,email_message)	
-				return render_template("signup.html",res_msg=res_msg,title="signup")
+				danzer = "false"
+				return render_template("signup.html",res_msg=res_msg,title="signup",danzer=danzer)
 			except:
 				db.rollback()
 				cursor.close()
 				res_msg = "Something Was Wrong !"
-				return render_template("signup.html",res_msg=res_msg,title="signup")
+				danzer = "true"
+				return render_template("signup.html",res_msg=res_msg,title="signup",danzer=danzer)
+		else:
+			cursor.close()
+			res_msg = "Please Enter All Informations ! "
+			danzer = "true"
+			return render_template("signup.html",res_msg=res_msg,title="signup",danzer=danzer)		
 	else:
 		return render_template("signup.html",title="signup")	
 
-#aa code ma khabar nai padi
-#def login_required(f):
-#	@wraps(f)
-#	def decorated_function(*args, **kwargs):
-#		if 'logged_in' in session:
-#			return f(*args, **kwargs)
-#		else:
-#			return redirect(url_for('login'))
-#	return decorated_function			
-# bas aa upervadu khabr na padi	
-
+@app.route("/")
 @app.route("/login", methods=['GET','POST'])
 def login():
 	if request.method == 'POST':
 		username = request.form['username']
 		password = request.form['password']
-		
-		if username and password:
-			cursor = db.cursor()
+		cursor = db.cursor()
+		if username != "" and password !="":
+			
 			query = 'select username from regester where username = "'+str(username)+'"'
 			cursor.execute(query)
 			numrow = cursor.rowcount
@@ -118,6 +117,10 @@ def login():
 				message = "No such username Exiist  ! "
 				cursor.close()
 				return render_template("login.html",message=message,title="login")
+		else:
+				message = "Please Enter Unsername And Password "
+				cursor.close()
+				return render_template("login.html",message=message,title="login")	
 	else:
 		if 'logged_in' in session:
 			return redirect("dashboard/"+session['username'])
@@ -132,8 +135,8 @@ def logout():
 def send_data(reciver,message):
 	s = smtplib.SMTP('smtp.gmail.com', 587) 
 	s.starttls() 
-	s.login(" #Enter Your Email#", "#Enter Your Password#") 
-	s.sendmail("testyemailid@gmail.com",reciver, message) 
+	s.login("fruitstoreuvpce@gmail.com", "*mitul123") 
+	s.sendmail("fruitstoreuvpce@gmail.com",reciver, message) 
 	s.quit()
 
 
@@ -153,19 +156,19 @@ def done(username,total_prise,bill):
 	email_msg = '''
 	Hello {},
 	Your iteam is :  {}
-	Total prise is :  {} /-
-	your order is reach you in 1 hour !
+	Total price is :  {} /-
+	your order will reach you in 1 hour !
 	your Address is : {}
-	Happy to Help you ! Thank you, from Mitul Patel
+	Happy to Help you ! Thank you, from UVPCE Fruit Store.
 	'''.format(username,list_str,total_prise,address)
-			
+	tablelist = order_dict
 	try:
 		send_data(email,email_msg)
 		cursor.execute(query,(bill,total_prise))
 		db.commit()
 		cursor.close()	
 		
-		return "done ! {} {} ".format(email,email_msg)
+		return render_template('thankyou.html',username = username,list_str=list_str,total_prise=total_prise,address=address,tablelist=tablelist)
 	except:
 		db.rollback()
 		cursor.close()	
@@ -223,7 +226,7 @@ def change_password():
                     Hello {},
                     Password Successfully Changed ! 
 
-                    				Thank you, from Mitul Patel
+                    				Thank you, from UVPCE Fruit Store.
 						'''.format(data[1])
 
 				send_data(email,email_message)
@@ -263,8 +266,8 @@ def recovery():
                         Your username : {}
                         	 password : {} 
 
-                    				Thank you, from Mitul Patel
-						'''.format(data[1],data[2],data[4])
+                    				Thank you, from UVPCE Fruit Store.
+						'''.format(data[1],data[2],data[6])
 			send_data(data[3],email_message)
 			message = "Username and Password Are Send To Your Email ! "
 			cursor.close()
@@ -328,19 +331,81 @@ def dashboard(username):
 
 	return "something was wrong ! try again! "
 
+@app.route("/shopkeeper_auth", methods=['GET','POST'])
+def shopkeeper_auth():
+	if request.method == 'POST':
+		username = request.form['username']
+		password = request.form['password']
+		if username == "shop" and password == "shop":
+			session['shopkeeper'] = username
+			return redirect("shopkeeper")
+		else:
+			message = "Username or Password Does Not Match !"
+			danzer = "true"
+			return render_template("shopkeeper_login.html",message=message,danzer=danzer,title="shopkeeper")	
+	else:
+		if 'shopkeeper' in session:
+			return redirect("shopkeeper")
+		else:
+			return render_template("shopkeeper_login.html",title="shopkeeper")
+
+
+
 @app.route("/shopkeeper", methods=['GET','POST'])
 def shopkeeper():
+	cursor = db.cursor()
+	cursor.execute('SELECT * FROM fruits')
+	data = cursor.fetchall()
+	total_fruit = len(data)
+	
 	if request.method == 'POST':
+
+		
+
 		iteam_name = request.form['iteam_name']
 		iteam_prise = request.form['iteam_prise']
-		cursor = db.cursor()
-		query = "insert into fruits(fruit_name,fruit_prise) values(%s,%s)"
-		cursor.execute(query,(iteam_name,iteam_prise))
-		db.commit()	
-		cursor.close()
-		return render_template("shopkeeper.html")
+		if iteam_name != "" and iteam_prise != "":
+			cursor = db.cursor()
+			query = "insert into fruits(fruit_name,fruit_prise) values(%s,%s)"
+			cursor.execute(query,(iteam_name,iteam_prise))
+			db.commit()	
+			# for fetching  updated data
+			cursor.execute('SELECT * FROM fruits')
+			data = cursor.fetchall()
+			total_fruit = len(data) 
+			cursor.close()
+			message = iteam_name+" successfully added ! "
+			danzer = "flase"
+			return render_template("shopkeeper.html",message = message,data = data,total_fruit=total_fruit,danzer=danzer)
+		else:
+			message = "Please Enter Valid Information ! "
+			danzer = "true"
+			return render_template("shopkeeper.html",message = message,data = data,total_fruit=total_fruit,danzer=danzer)	
 	else:
-		return render_template("shopkeeper.html")
+		if 'shopkeeper' in session:
+			return render_template("shopkeeper.html",data=data,total_fruit=total_fruit)
+		else:
+			return redirect("shopkeeper_auth")
+
+@app.route("/operation/<id_code>")
+def operation(id_code):
+	if 'shopkeeper' in session:
+		cursor = db.cursor()
+		cursor.execute("select fruit_id from fruits")
+		numrow1 = cursor.rowcount
+		ids = cursor.fetchall()
+	
+		x = str(id_code)
+		query = "DELETE FROM fruits WHERE fruit_id=%s"
+		cursor.execute(query,(x))
+		db.commit()
+		return redirect("/shopkeeper_auth")
+	else:
+		return redirect("/shopkeeper_auth")	
+
+					
+	
+
 
 @app.route("/profile/<username>", methods=['GET','POST'])
 def profile(username):
@@ -350,52 +415,84 @@ def profile(username):
 		query0 = "select id from regester where username = %s"
 		cursor.execute(query0,(username))
 		user_id = cursor.fetchone()
+		query = "select * from regester where username = %s"
+		cursor.execute(query,(username))		
+		data = cursor.fetchall()
+		email_fetched = data[0][3]
 		if request.method == 'POST':
 			name = request.form['name']
-			username = request.form['username']
+			#username_form = request.form['username']
 			email = request.form['email']
 			contact = request.form['contact']
 			address = request.form['address']
 
-			if name and username and email and contact and address:
+			if name !="" and  email !="" and contact !="" and address !="":
 
-				query_username_check = "select username from regester"
-				cursor.execute(query_username_check)
-				numrow = cursor.rowcount
-				for i in range(numrow):
-					fetched_username = cursor.fetchone()
-					if fetched_username[0] == username:
-						res_msg = "username is already in the database. so type other username ! ThankYou"
-						return render_template("profile.html",res_msg=res_msg,title="profile")
+				'''if username_form != username:
+					query_username_check = "select username from regester"
+					cursor.execute(query_username_check)
+					numrow = cursor.rowcount
+					for i in range(numrow):
+						fetched_username = cursor.fetchone()
+						if fetched_username[0] == username:
+							res_msg = "{} username is already in the database. so type other username ! ThankYou".format(username_form)
+							return render_template("profile.html",data=data,res_msg=res_msg,title="profile")'''
 
+				if email_fetched != email:
+					query_email_check = "select email from regester"
+					cursor.execute(query_email_check)
+					numrow = cursor.rowcount
+					for i in range(numrow):
+						fetched_email = cursor.fetchone()
+						if fetched_email[0] == email:
+							res_msg = " '{}' is already in the database. so type other Email ! ThankYou".format(email)
+							return render_template("profile.html",res_msg=res_msg,title="profile",data=data)
 
-				query_email_check = "select email from regester"
-				cursor.execute(query_email_check)
-				numrow = cursor.rowcount
-				for i in range(numrow):
-					fetched_email = cursor.fetchone()
-					if fetched_email[0] == email:
-						res_msg = "Email is already in the database. so type other Email ! ThankYou"
-						return render_template("profile.html",res_msg=res_msg,title="profile")
-
-				query1 = "update regester set name = %s,username = %s,email = %s,contact = %s,adddress = %s where id = %s"
+				query1 = "UPDATE regester SET name = %s,email = %s,contact = %s,address = %s where username = %s"
 				try:
-					cursor.execute(query1,(name,username,email,contact,address,user_id))
+					cursor.execute(query1,(name,email,contact,address,username))
 					db.commit()
+					query = "select * from regester where username = %s"
+					cursor.execute(query,(username))		
+					data = cursor.fetchall()
+					res_msg = "Data Updated ! Thank You !"
+					return render_template("profile.html",res_msg=res_msg,title="profile",data=data)
 				except:
 					res_msg = "Something Was Wrong ! Please Try Again"
-					return render_template("profile.html",res_msg=res_msg,title="profile")
+					return render_template("profile.html",res_msg=res_msg,title="profile",data=data)
 			else:
-				res_msg = "Invalid Information !"	
-				return render_template("profile.html",res_msg=res_msg,title="profile")
+				res_msg = "Invalid Information ! Please try Agian !"	
+				return render_template("profile.html",res_msg=res_msg,title="profile",data=data)
 		else:
-			query = "select * from regester where username = %s"
-			cursor.execute(query,(username))		
-			data = cursor.fetchall()
-			res_msg = "done"
+			
+			res_msg = ""
 			return render_template("profile.html",res_msg=res_msg,data=data)
 	else:
 		return redirect("login")	
+
+@app.route("/my_order/<username>")
+def my_order(username):
+	if 'logged_in' in session:
+		cursor = db.cursor()
+		username = session['username']
+		query = "select * from {}".format(username)
+		try:
+			cursor.execute(query)		
+			data = cursor.fetchall()
+		except:
+			return "tabLe not found ! "
+		print(data)
+		data_length = len(data)
+		return render_template("myorder.html",title="myorder",data=data,data_length=data_length)	
+	else:
+		return redirect("login")	
+
+@app.route("/about")
+def about():
+
+    return render_template("about.html")
+
+
 
 if __name__ == '__main__':
 	app.run(debug=True)
