@@ -1,46 +1,38 @@
+
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    {% if title %}
-        <title>Pablo - {{ title }}</title>
-    {% else %}
-        <title>Pablo</title>
-    {% endif %}
-  
-             <!-- Latest compiled and minified CSS -->
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<html>
+<head>
+	<title></title>
 
-          <!-- Optional theme -->
-          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-          <!-- Latest compiled and minified JavaScript -->
-          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-          <!--ststic file from own maded -->
-          <link rel="stylesheet" type="text/css" href="../static/main.css">
-          <script src="../static/main.js"></script>
-  </head>
-  <body >
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-     <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='main.css') }}">
+<script src="{{ url_for('static',filename='main.js') }}"></script>
+</head>
+<body>
+ <!-- Static navbar -->
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid" >
+         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Pablo Escobar</a>
+          <a class="navbar-brand" href="#" style="text-align: center;font-family: Comic Sans Ms;">Fruit Store</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/login">Home</a></li>
+            <li class=""><a href="/about">About</a></li>
             
             <!--
             <li class="dropdown">
@@ -57,34 +49,65 @@
             </li>-->
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {% if session.logged_in or session.admin %}
+
+
+            {% if session.logged_in  %}
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hello, <span class="glyphicon glyphicon-user"></span> {{session['username']}}
               <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li><a href="/profile/{{session['username']}}">My Profile</a></li>
+                <li><a href="/my_order/{{session['username']}}">My Order</a></li>
                 <li><a href="/ChangePassword">Change Password</a></li>
                 
               </ul>
             </li>
                <!-- <li><a href="#"> Hello, <span class="glyphicon glyphicon-user"></span> {{session['username']}}</a></li>-->
-                <li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+                <li ><a href="/logout" ><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+            {% elif  session.admin %}    
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hello, <span class="glyphicon glyphicon-user"></span> Admin
+                </a>
+               
+              </li>
+                 <!-- <li><a href="#"> Hello, <span class="glyphicon glyphicon-user"></span> {{session['username']}}</a></li>-->
+                  <li ><a href="/logout" ><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+            {% elif  session.shopkeeper %}    
+                  <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#">Hello, <span class="glyphicon glyphicon-user"></span> Shopkeeper
+                      </a>
+                     
+                    </li>
+                       <!-- <li><a href="#"> Hello, <span class="glyphicon glyphicon-user"></span> {{session['username']}}</a></li>-->
+                        <li ><a href="/logout" ><span class="glyphicon glyphicon-off"></span> Logout</a></li>      
             {% else %}
+
+
+
                 <li><a href="/signup"><span class="glyphicon glyphicon-paperclip"></span> SignUp</a></li>
                 <li><a href="/login"><span class="glyphicon glyphicon-user"></span> Login</a></li>
             {% endif %}
+
+
+            
            
           </ul>
         </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-    <div class="container-fluid" ">
-        {% block content %}{% endblock %}
-    </div>
+        </div><!--/.container-fluid -->
+      </nav>
+
+
+    <div class="container" style="margin-top:4%;margin-bottom: 3%;">
+
+     
+      {% block content %}{% endblock %}
+
+    </div> <!-- /container -->
+
     
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>

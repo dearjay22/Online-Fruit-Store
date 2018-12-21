@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
-	<div>
-		<div id="fruits">
+
+	<div style="background-image:url('img/1.jpg')">
+		<div id="fruits" class="jumbotron">
 			
-			<div class="row">
+			<div class="row" >
 				<div class="col-sm-3">
 				</div>
 				<div class="col-sm-6">
@@ -14,10 +15,10 @@
 						</div>
 					{% endif %}
 			<form action="/dashboard/{{session['username']}}" method="post">
-				<table class="table table-condensed" border=2">
+				<table class="table table-condensed" border="2">
 						<tr style="background-color: lightblue; ">
 							<th style="text-align: center;">Fruit Name</th>
-							<th style="text-align: center;">Prise per 1 Kg</th>
+							<th style="text-align: center;">Price per Kg</th>
 							<th style="text-align: center;">How Much?</th>
 							<th style="text-align: center;">select</th>
 						</tr>
@@ -46,8 +47,6 @@
 			</div>
 			
 		</div>
-		<div id="vegs">
-
-		</div>	
+			
 	</div>
 {% endblock content %}
