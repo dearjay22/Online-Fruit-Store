@@ -135,8 +135,8 @@ def logout():
 def send_data(reciver,message):
 	s = smtplib.SMTP('smtp.gmail.com', 587) 
 	s.starttls() 
-	s.login("fruitstoreuvpce@gmail.com", "*mitul123") 
-	s.sendmail("fruitstoreuvpce@gmail.com",reciver, message) 
+	s.login("Enter Your Email Here", "Enter Your Password Here") 
+	s.sendmail("Enter Your Email Here",reciver, message) 
 	s.quit()
 
 
